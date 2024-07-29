@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: yaman
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+  - repoURL: registry-1.docker.io/bitnamicharts
+    chart: nginx
+    targetRevision: 18.1.7
+    helm:
+      releaseName: yaman
+      valueFiles:
+      - $values/helm/yaman/values.yaml
+  - repoURL: ... # your gitlab repo
+    targetRevision: SRE-00
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stars

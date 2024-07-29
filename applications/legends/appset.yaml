@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: legends
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - service: messi
+      - service: ronaldo
+  template:
+    metadata:
+      name: '{{.service}}'
+      namespace: argocd
+    spec:
+      project: default
+      sources:
+        - repoURL: registry-1.docker.io/bitnamicharts
+          chart: nginx
+          targetRevision: 18.1.7
+          helm:
+            releaseName: '{{.service}}'
+            valueFiles:
+            - $values/helm/{{.service}}/values.yaml
+        - repoURL: ... # your gitlab repo
+          targetRevision: SRE-00
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: legends

@@ -1,0 +1,5 @@
+image:
+  tag: 1.27.0
+service:
+  type: ClusterIP
+namespaceOverride: legends
